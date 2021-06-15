@@ -34,5 +34,6 @@ public class CaesarCipher
 			cipherText.append(encodedChar);
 		}
 		System.out.println("Your message "+ cipherText);
+		input.close();
 	}
 }

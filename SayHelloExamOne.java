@@ -7,6 +7,7 @@ public class SayHelloExamOne {
 		System.out.print("please enter a value");
 		int value = input.nextInt();
 		sayHello(value);
+		input.close();
 	}
 	public static void sayHello (int value){
 		for (int i = 1; i <= value/2; i++){
