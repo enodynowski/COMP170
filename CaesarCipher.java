@@ -33,7 +33,7 @@ public class CaesarCipher
 			}
 			cipherText.append(encodedChar);
 		}
-		System.out.println("Your message "+ cipherText);
+		System.out.println("Your message is "+ cipherText);
 		input.close();
 	}
 }
