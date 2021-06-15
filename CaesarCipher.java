@@ -1,3 +1,4 @@
+import java.util.Scanner;
 public class CaesarCipher
 {
 	public static void main(String[] args) 
@@ -11,7 +12,7 @@ public class CaesarCipher
 		int key;
 		char encodedChar;
 		//take user input
-		Scanner170 input = new Scanner170(System.in);
+		Scanner input = new Scanner(System.in);
 		System.out.print("Your message? ");
 		plainText = input.nextLine();
 		System.out.print("Encoding key? ");

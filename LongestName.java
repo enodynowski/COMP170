@@ -1,12 +1,14 @@
+import java.util.Scanner;
+
 public class LongestName
 {
 	public static void main(String[] args) 
 	{
 		//creating the scanner object and calling the method
-		Scanner170 console = new Scanner170(System.in);
+		Scanner console = new Scanner(System.in);
 		longestName(console, 4);
 	}
-	public static void longestName(Scanner170 console, int n){
+	public static void longestName(Scanner console, int n){
 		String longest = "";
 		boolean tie = false;
 		//printing n amount of times

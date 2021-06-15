@@ -1,7 +1,9 @@
+import java.util.Scanner;
+
 public class SayHelloExamOne {
 	public static void main(String[] args) {
 
-		Scanner170 input = new Scanner170(System.in);
+		Scanner input = new Scanner(System.in);
 		System.out.print("please enter a value");
 		int value = input.nextInt();
 		sayHello(value);
