@@ -45,12 +45,13 @@ public class JSONTesting{
                 System.out.println(obj.get("TotalRecovered"));
 
                 JSONArray arr = (JSONArray) data_obj.get("Countries");
+                System.out.println(arr);
 
                 for (int i = 0; i < arr.size(); i++) {
 
                     JSONObject new_obj = (JSONObject) arr.get(i);
 
-                    if (new_obj.get("Slug").equals("albania")) {
+                    if (new_obj.get("Slug").equals("germany")) {
                         System.out.println("Total Recovered: " + new_obj.get("TotalRecovered"));
                         break;
                     }
