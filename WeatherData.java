@@ -15,7 +15,7 @@ public class WeatherData {
         
         //I put it all in a try/catch just in case it throws any exceptions
         try{
-            //I used the AccuWeather API that provides lots of 5 day forecase weather data 
+            //I used the AccuWeather API that provides lots of 5 day forecast weather data 
             //initializing the URL of the API, opening a connection, and sending the HTTP GET request
             URL url = new URL ("http://dataservice.accuweather.com/forecasts/v1/daily/5day/348308?apikey=iMue2MKkV2xhk5Xi5ABDAqUSvM4MvU5W&language=en-us&details=false&metric=false");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
