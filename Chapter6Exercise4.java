@@ -7,7 +7,7 @@ public class Chapter6Exercise4 {
     //this will format the decimal places in the final value such that it rounds down to only 2
     public static DecimalFormat df = new DecimalFormat("0.00");
     public static void main (String[] args) throws FileNotFoundException{
-       //Creating the scanner object
+       //Creating the scanner object and pointing it to the file
         Scanner input = new Scanner(new File( "/Users/enodynowski/Desktop/coins" ));
         countCoins(input);
         
