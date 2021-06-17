@@ -2,22 +2,34 @@
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+
+import java.io.FileNotFoundException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
+import java.io.File;
 public class WeatherData {
-    public static void main (String [] args){
-        
-        mainGet();
+    public static void main (String [] args)throws FileNotFoundException{
+        //to obfuscate the API key, i've stored the URL locally in a .txt file and created a scanner class that just reads from it. 
+        Scanner input = new Scanner(new File ( "/Users/enodynowski/Desktop/URL.txt" ));
+            
+        mainGet(input);
+
 
     }
-    public static void mainGet(){
+    public static void mainGet(Scanner input) {
         
         //I put it all in a try/catch just in case it throws any exceptions
         try{
+            //reading from the URL.txt file for the URL
+            String urlText = "";
+            while (input.hasNext()){
+                urlText = input.next();
+                System.out.println("Hello 0");
+            }             
             //I used the AccuWeather API that provides lots of 5 day forecase weather data 
             //initializing the URL of the API, opening a connection, and sending the HTTP GET request
-            URL url = new URL ("http://dataservice.accuweather.com/forecasts/v1/daily/5day/348308?apikey=iMue2MKkV2xhk5Xi5ABDAqUSvM4MvU5W&language=en-us&details=false&metric=false");
+            URL url = new URL (urlText);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();
