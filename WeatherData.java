@@ -25,7 +25,6 @@ public class WeatherData {
             String urlText = "";
             while (input.hasNext()){
                 urlText = input.next();
-                System.out.println("Hello 0");
             }             
             //I used the AccuWeather API that provides lots of 5 day forecast weather data 
             //initializing the URL of the API, opening a connection, and sending the HTTP GET request
