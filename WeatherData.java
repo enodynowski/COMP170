@@ -27,7 +27,7 @@ public class WeatherData {
                 urlText = input.next();
                 System.out.println("Hello 0");
             }             
-            //I used the AccuWeather API that provides lots of 5 day forecase weather data 
+            //I used the AccuWeather API that provides lots of 5 day forecast weather data 
             //initializing the URL of the API, opening a connection, and sending the HTTP GET request
             URL url = new URL (urlText);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
