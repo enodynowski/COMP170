@@ -13,23 +13,82 @@ public class WeatherData {
         //to obfuscate the API key, i've stored the URL locally in a .txt file and created a scanner class that just reads from it. 
         Scanner input = new Scanner(new File ( "/Users/enodynowski/Desktop/URL.txt" ));
             
-        mainGet(input);
+        Scanner userInput = new Scanner(System.in);
+        System.out.print("Please enter a zip code: ");
+        final String ZIP_CODE = userInput.next();
+        getLocationCode(input, ZIP_CODE);
+        userInput.close();
+
+
 
 
     }
-    public static void mainGet(Scanner input) {
-        
+    public  static String getLocationCode(Scanner input, String zipCode) {
         //I put it all in a try/catch just in case it throws any exceptions
+        
+
+
         try{
-            //reading from the URL.txt file for the URL
-            String urlText = "";
-            while (input.hasNext()){
-                urlText = input.next();
-            }             
+            String locationURLString = "http://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=iMue2MKkV2xhk5Xi5ABDAqUSvM4MvU5W &q=" + zipCode + "&language=en-us&details=false";
+           
+            URL locationURL = new URL (locationURLString);
+            HttpURLConnection connect = (HttpURLConnection) locationURL.openConnection();
+            connect.connect();
+
+            int responseCode2 = connect.getResponseCode();
+
+            if (responseCode2 != 200){
+                throw new RuntimeException("HttpResponseCode: " + responseCode2);
+
+            } else {
+                String inline = "";
+                //creating a scanner object that will read from the URL in the same way that scanner would read from a file
+                Scanner scanner = new Scanner(locationURL.openStream());
+
+                //turning the JSON data from the URL into a string
+                while (scanner.hasNext()){
+                    inline+=scanner.nextLine();
+                }
+                scanner.close();
+
+                JSONParser parse = new JSONParser();
+                JSONArray array = (JSONArray) parse.parse(inline);
+                JSONObject arrayZero = (JSONObject) array.get(0);
+                JSONObject parentCity = (JSONObject) arrayZero.get("ParentCity");
+                String locationKey = (String) parentCity.get("Key");
+
+                getForecastData(input,zipCode ,locationKey);
+
+
+             
+
+                return locationKey;
+
+
+            }
+
+            
+        } catch (Exception e){
+             
+            e.printStackTrace();
+            String n = "TEST";
+            return n;
+            
+        }
+    }
+        
+     
+     
+    public static void getForecastData (Scanner input, String zipCode, String locationCode){ 
+        try{
+            
             //I used the AccuWeather API that provides lots of 5 day forecast weather data 
             //initializing the URL of the API, opening a connection, and sending the HTTP GET request
-            URL url = new URL (urlText);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            String weatherURLString = "http://dataservice.accuweather.com/forecasts/v1/daily/5day/" + locationCode + "?apikey=iMue2MKkV2xhk5Xi5ABDAqUSvM4MvU5W&language=en-us&details=false&metric=false";
+            System.out.println(weatherURLString);
+            
+            URL weatherUrl = new URL (weatherURLString);
+            HttpURLConnection conn = (HttpURLConnection) weatherUrl.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();
 
@@ -40,7 +99,7 @@ public class WeatherData {
             } else {
                 String inline = "";
                 //creating a scanner object that will read from the URL in the same way that scanner would read from a file
-                Scanner scanner = new Scanner(url.openStream());
+                Scanner scanner = new Scanner(weatherUrl.openStream());
 
                 //turning the JSON data from the URL into a string
                 while (scanner.hasNext()){
