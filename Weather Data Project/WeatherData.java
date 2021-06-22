@@ -1,24 +1,30 @@
-//using the library json.simple which provides for easier maniuplation of the JSON data from the AccuWeather API
-//Prior to compiling and running this code make sure that you have added the json-simple-1.1.1.jar to your CLASSPATH
+/*using the library json.simple which provides for easier maniuplation of the JSON data from the AccuWeather API
+ Prior to compiling and running this code make sure that you have added the json-simple-1.1.1.jar to your CLASSPATH
+ These libraries can be found here: https://github.com/fangyidong/json-simple
+*/
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+
 //including all other relevant libraries required for this project
 import java.io.FileNotFoundException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Scanner;
 public class WeatherData {
+    
     public static void main (String [] args)throws FileNotFoundException{
         //initializing the scanner class that will prompt the user for the zip code from which they would like weather data  
         Scanner userInput = new Scanner(System.in);
         System.out.print("Please enter a zip code: ");
         
+
+        
         //the constant that is the zip code that the user enters, and that gets passed into the methods
         final String ZIP_CODE = userInput.next();
         getLocationCode(ZIP_CODE);
         userInput.close();
-
 
 
 
@@ -37,6 +43,11 @@ public class WeatherData {
             connect.setRequestMethod("GET");
             connect.connect();
             
+            
+            
+            
+
+
             //getting the response code back from the GET request, and testing if it is 200. Otherwise throwing a runtime exception
             int responseCode2 = connect.getResponseCode();
             if (responseCode2 != 200){
@@ -72,14 +83,10 @@ public class WeatherData {
                 //Casting the value of the "Key" key to a string such that it can be returned by the method, and then called again in method below 
                 String locationKey = (String) parentCity.get("Key");
 
-                
                 //calling the other method, that takes a parameter of the zip code entered and the location key that was identified above
                 getForecastData(zipCode ,locationKey);
-
-
-             
-                
                 return locationKey;
+
 
 
             }
@@ -96,14 +103,13 @@ public class WeatherData {
         
      
      
-    public static void getForecastData (String zipCode, String locationCode){ 
-        //This code is quite similar to the above method, however 
-        
+    public static void getForecastData (String zipCode, String locationKey){ 
+ 
         try{
             
             //I used the AccuWeather API that provides lots of 5 day forecast weather data 
             //initializing the URL of the API, opening a connection, and sending the HTTP GET request
-            String weatherURLString = "http://dataservice.accuweather.com/forecasts/v1/daily/5day/" + locationCode + "?apikey=iMue2MKkV2xhk5Xi5ABDAqUSvM4MvU5W&language=en-us&details=false&metric=false";
+            String weatherURLString = "http://dataservice.accuweather.com/forecasts/v1/daily/5day/" + locationKey + "?apikey=iMue2MKkV2xhk5Xi5ABDAqUSvM4MvU5W&language=en-us&details=false&metric=false";
             
             URL weatherUrl = new URL (weatherURLString);
             HttpURLConnection conn = (HttpURLConnection) weatherUrl.openConnection();
@@ -141,7 +147,6 @@ public class WeatherData {
                     JSONObject temp = (JSONObject) dayForecast.get("Temperature");
                     JSONObject maximum = (JSONObject) temp.get("Maximum");
                     JSONObject minimum = (JSONObject) temp.get("Minimum");
-                    
                     //creating a string out of the "Date" JSON key/value pair
                     String dateShort = (String) dayForecast.get("Date");
                     
@@ -160,5 +165,6 @@ public class WeatherData {
 
         //this method does not need to return anything
 
-    }
-}
+    }        
+
+} 
