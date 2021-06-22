@@ -1,0 +1,19 @@
+So far these are the main issues that I have had to troubleshoot
+    1) I have had some trouble initially parsing through the JSON data that was given from the API
+        -SOLVED: I forgot to call the method from main haha. Also it took some time to get used to using the json.simple library
+    
+    2) I then had some trouble getting my program to print the correct values, and it was using the provided location key to search globally
+       and was returning data for random places in Europe and SE Asia
+        -SOLVED: I had to initially cast the data to a JSON Array and then navigate through the nested objects
+    
+    3) I had some issues where, in the process of trying to obfuscate my API key from the URL, it wouldn't be reinserted when trying to create the new 
+       URL class. 
+        -SEMI-SOLVED: I havent successfully obfuscated my API key yet, but i have been able to get the URLs to work again. Can only
+        pass one variable in at a time for some reason. 
+    
+    4) While adding in functionality that takes user input for what zip code they would like weather data from, I kept receiving 401 errors
+        -SOLVED: the URL was not being processed correctly, and for whatever reason the API key was not being passed into it
+    
+    5) Currently struggling to work through how to add in a caching mechanism. Have experimented briefly with in-memory caching, which proved to be
+       pretty difficult. Also experimented briefly with some local file caching, and caching to an array and an arraylist.
+        -UNSOLVED: So far, no luck with anything. I am open to suggestions for how to proceed. 
