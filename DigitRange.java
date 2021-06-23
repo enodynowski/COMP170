@@ -14,6 +14,9 @@ public class DigitRange {
         System.out.println(calculateDigitRange(481623));
         //7 - 3 = 4 + 1 is 5, so should print 5
         System.out.println(calculateDigitRange(7734645));
+        //testing a 1 digit case, it returns 1
+        System.out.println(calculateDigitRange(5));
+
 
 
     }
@@ -40,7 +43,7 @@ public class DigitRange {
         }
        
         //I set the variable minimum to the correseponding value of an unimportant index in the Array list, in this case, at index 1
-        int minimum = array.get(1);
+        int minimum = array.get(0);
         //this is the same as the loop above for max, however it will test the values to see if they are less than
         //the previousl define minimum, and then update the minimum to that value
         for (int i = 1; i <array.size(); i++){

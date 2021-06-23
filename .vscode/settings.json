@@ -4,5 +4,9 @@
         "/Users/enodynowski/Desktop/JSON/json-simple-1.1.1.jar",
         "/Users/enodynowski/Downloads/failureaccess-1.0.1.jar",
         "/Users/enodynowski/Downloads/guava-30.1.1-jre.jar"
+    ],
+    "java.project.sourcePaths": [
+        "Weather Data Project",
+        ""
     ]
 }

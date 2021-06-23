@@ -21,14 +21,12 @@ public class HolyDigits {
                                         System.out.println("The address is " + thousands + hundreds + tens + ones + " Pennsylvania Ave");
 
                                     }
-
                                 }
                             }
                         }
                     }
                 }
             }
-        }
-        
+        }   
     }
 }   

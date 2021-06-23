@@ -36,7 +36,7 @@ public class WeatherData {
         try{
             
             //this is the string for the URL that gets cast to the URL class in java
-            String locationURLString = "http://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=iMue2MKkV2xhk5Xi5ABDAqUSvM4MvU5W &q=" + zipCode + "&language=en-us&details=false";
+            String locationURLString = "http://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=iMue2MKkV2xhk5Xi5ABDAqUSvM4MvU5W&q=" + zipCode + "&language=en-us&details=false";
            
             //initializing and connecting to the URL
             URL locationURL = new URL (locationURLString);
@@ -148,13 +148,27 @@ public class WeatherData {
                     JSONObject temp = (JSONObject) dayForecast.get("Temperature");
                     JSONObject maximum = (JSONObject) temp.get("Maximum");
                     JSONObject minimum = (JSONObject) temp.get("Minimum");
-                    //creating a string out of the "Date" JSON key/value pair
-                    String dateShort = (String) dayForecast.get("Date");
                     
-                    //printing the final output
-                    System.out.println("The high for " + dateShort.substring(0,10) + " is " + maximum.get("Value"));
-                    System.out.println("The low for " + dateShort.substring(0,10) + " is " + minimum.get("Value"));
+                    //fetching data for precipitation type and intensity
+                    JSONObject day = (JSONObject) dayForecast.get("Day");
+                    boolean dayPrecip = (boolean) day.get("HasPrecipitation");
+                    String dateShort = (String) dayForecast.get("Date");
 
+                    //if there is precipitation, print out the type and intensity 
+                    if(dayPrecip){
+                        String dayPrecipIntensity = (String) day.get("PrecipitationIntensity");
+                        String dayPrecipType = (String) day.get("PrecipitationType");
+
+                        System.out.println(dateShort.substring(0, 10) + ": " + day.get("IconPhrase") + " with a high of " + maximum.get("Value") + " and a low of " + minimum.get("Value"));
+                        System.out.println("There will be " + dayPrecipIntensity.toLowerCase() + " " + dayPrecipType.toLowerCase());
+                        System.out.println();
+
+
+                    } else {
+                        System.out.println(dateShort.substring(0, 10) + ": " + day.get("IconPhrase") + " with a high of " + maximum.get("Value") + " and a low of " + minimum.get("Value"));
+                        System.out.println();
+
+                    }
                 }
             }
         }
