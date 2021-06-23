@@ -1,4 +1,5 @@
-/*using the library json.simple which provides for easier maniuplation of the JSON data from the AccuWeather API
+/*
+ using the library json.simple which provides for easier maniuplation of the JSON data from the AccuWeather API
  Prior to compiling and running this code make sure that you have added the json-simple-1.1.1.jar to your CLASSPATH
  These libraries can be found here: https://github.com/fangyidong/json-simple
 */
@@ -10,7 +11,6 @@ import org.json.simple.parser.JSONParser;
 import java.io.FileNotFoundException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Scanner;
 public class WeatherData {
     
@@ -29,6 +29,7 @@ public class WeatherData {
 
 
     }
+    //this method will fetch the location code for a provided zip code and return it as a string
     public  static String getLocationCode(String zipCode) {
         //I put it all in a try/catch just in case it throws any exceptions due to response codes
         
@@ -102,7 +103,7 @@ public class WeatherData {
     }
         
      
-     
+    //this method will use the location code from the above method and use it to fetch the weather data from above 
     public static void getForecastData (String zipCode, String locationKey){ 
  
         try{
