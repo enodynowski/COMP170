@@ -7,11 +7,14 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import java.io.File;
 //including all other relevant libraries required for this project
 import java.io.FileNotFoundException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
+
+
 public class WeatherData {
     
     public static void main (String [] args)throws FileNotFoundException{
@@ -29,17 +32,23 @@ public class WeatherData {
 
 
     }
+
+    
     //this method will fetch the location code for a provided zip code and return it as a string
     public  static String getLocationCode(String zipCode) {
         //I put it all in a try/catch just in case it throws any exceptions due to response codes
         
         try{
-            
+            Scanner URLinput = new Scanner (new File("/Users/enodynowski/Desktop/URL.txt"));
+            String apiKey = "";
+            while (URLinput.hasNext()){
+                apiKey+=URLinput.next();
+            }
             //this is the string for the URL that gets cast to the URL class in java
-            String locationURLString = "http://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=iMue2MKkV2xhk5Xi5ABDAqUSvM4MvU5W&q=" + zipCode + "&language=en-us&details=false";
-           
+            String locationURLString1 = "http://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey="+ apiKey + "&q=" + zipCode + "&language=en-us&details=false";
+
             //initializing and connecting to the URL
-            URL locationURL = new URL (locationURLString);
+            URL locationURL = new URL (locationURLString1);
             HttpURLConnection connect = (HttpURLConnection) locationURL.openConnection();
             connect.setRequestMethod("GET");
             connect.connect();
@@ -107,10 +116,14 @@ public class WeatherData {
     public static void getForecastData (String zipCode, String locationKey){ 
  
         try{
-            
+            Scanner URLinput = new Scanner (new File("/Users/enodynowski/Desktop/URL.txt"));
+            String apiKey = "";
+            while (URLinput.hasNext()){
+                apiKey+=URLinput.next();
+            }
             //I used the AccuWeather API that provides lots of 5 day forecast weather data 
             //initializing the URL of the API, opening a connection, and sending the HTTP GET request
-            String weatherURLString = "http://dataservice.accuweather.com/forecasts/v1/daily/5day/" + locationKey + "?apikey=iMue2MKkV2xhk5Xi5ABDAqUSvM4MvU5W&language=en-us&details=false&metric=false";
+            String weatherURLString = "http://dataservice.accuweather.com/forecasts/v1/daily/5day/" + locationKey + "?apikey=" + apiKey + "&language=en-us&details=false&metric=false";
             
             URL weatherUrl = new URL (weatherURLString);
             HttpURLConnection conn = (HttpURLConnection) weatherUrl.openConnection();
@@ -144,34 +157,28 @@ public class WeatherData {
                 JSONObject dayForecast = null;
                 for (int i = 0; i < arr.size(); i++){
                     dayForecast = (JSONObject) arr.get(i);
-                    //parsing through the nested JSON objects that are returned from the API
+                    //parsing through the nested JSON objects that are returned from the API to retrieve the Temperature Data
                     JSONObject temp = (JSONObject) dayForecast.get("Temperature");
                     JSONObject maximum = (JSONObject) temp.get("Maximum");
                     JSONObject minimum = (JSONObject) temp.get("Minimum");
                     
-                    //fetching data for precipitation type and intensity
+                    //fetching data for precipitation type and intensity retrieving the precipitation Data and the date
                     JSONObject day = (JSONObject) dayForecast.get("Day");
                     boolean dayPrecip = (boolean) day.get("HasPrecipitation");
-                    String dateShort = (String) dayForecast.get("Date");
 
-                    //if there is precipitation, print out the type and intensity 
-                    if(dayPrecip){
-                        String dayPrecipIntensity = (String) day.get("PrecipitationIntensity");
-                        String dayPrecipType = (String) day.get("PrecipitationType");
-
-                        System.out.println(dateShort.substring(0, 10) + ": " + day.get("IconPhrase") + " with a high of " + maximum.get("Value") + " and a low of " + minimum.get("Value"));
-                        System.out.println("There will be " + dayPrecipIntensity.toLowerCase() + " " + dayPrecipType.toLowerCase());
-                        System.out.println();
-
-
-                    } else {
-                        System.out.println(dateShort.substring(0, 10) + ": " + day.get("IconPhrase") + " with a high of " + maximum.get("Value") + " and a low of " + minimum.get("Value"));
-                        System.out.println();
+                    //creating strings of the precipitation data and the date
+                    String dateShort = (String) dayForecast.get("Date"); 
+                    String dayPrecipIntensity = (String) day.get("PrecipitationIntensity");
+                    String dayPrecipType = (String) day.get("PrecipitationType");
+                    
+                    //calling the method that will format and output the data
+                    outputFormatting(dateShort, dayPrecipIntensity, dayPrecipType, dayPrecip, maximum, minimum, day);
+                    
 
                     }
+                    System.out.println();
                 }
-            }
-        }
+            }   
         
         //this will catch all exceptions that get thrown, and provide a stack trace to where it was thrown
         catch (Exception e){
@@ -180,6 +187,35 @@ public class WeatherData {
 
         //this method does not need to return anything
 
-    }        
+    } 
+    
+    public static void outputFormatting(String dateShort, String dayPrecipIntensity, String dayPrecipType, boolean dayPrecip, JSONObject maximum, JSONObject minimum, JSONObject day){
+        if(dayPrecip){
+            System.out.print("|          " + dateShort.substring(0,10) + "          |");
+            System.out.println();
+            System.out.println("  " + day.get("IconPhrase"));
 
+            System.out.println("  High          " + maximum.get("Value") );
+            System.out.println("  Low           " + minimum.get("Value"));
+            System.out.println("  Precip        " + dayPrecipIntensity.toLowerCase() + " " + dayPrecipType.toLowerCase());
+
+
+
+            //System.out.println(dateShort.substring(0, 10) + ": " + day.get("IconPhrase") + " with a high of " + maximum.get("Value") + " and a low of " + minimum.get("Value"));
+            //System.out.println("There will be " + dayPrecipIntensity.toLowerCase() + " " + dayPrecipType.toLowerCase());
+            //System.out.println();
+
+
+        } else {
+            System.out.print("|          " + dateShort.substring(0,10) + "          |");
+            System.out.println();
+            System.out.println("  " + day.get("IconPhrase"));
+
+            System.out.println("  High          " + maximum.get("Value") );
+            System.out.println("  Low           " + minimum.get("Value"));
+            System.out.println("  Precip        none");
+            //System.out.println(dateShort.substring(0, 10) + ": " + day.get("IconPhrase") + " with a high of " + maximum.get("Value") + " and a low of " + minimum.get("Value"));
+            //System.out.println();
+        }
+    }
 } 
