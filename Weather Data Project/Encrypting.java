@@ -1,4 +1,3 @@
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -6,7 +5,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 import java.util.Base64;
-import java.util.Scanner;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -19,7 +17,6 @@ import javax.crypto.spec.IvParameterSpec;
 public class Encrypting{
    public static void main(String [] args) throws NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, 
    BadPaddingException, InvalidAlgorithmParameterException, NoSuchPaddingException, FileNotFoundException{
-        Scanner fileInput = new Scanner (new File ("/Users/enodynowski/Desktop/URL.txt"));
         apiKeyEncrypting();
 
    }
