@@ -7,30 +7,104 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import java.io.File;
+
 //including all other relevant libraries required for this project
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintStream;
+
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+
+import java.time.Instant;
+
 import java.util.Scanner;
 
 
 public class WeatherData {
     
-    public static void main (String [] args)throws FileNotFoundException{
+    public static void main (String [] args)throws FileNotFoundException, IOException{
         //initializing the scanner class that will prompt the user for the zip code from which they would like weather data  
         Scanner userInput = new Scanner(System.in);
-        System.out.print("Please enter a zip code: ");
-        
-
-        
+        System.out.print("Please enter a zip code: ");  
         //the constant that is the zip code that the user enters, and that gets passed into the methods
         final String ZIP_CODE = userInput.next();
-        getLocationCode(ZIP_CODE);
         userInput.close();
+        mainLogic(ZIP_CODE);
 
 
 
+    }
+    public static void mainLogic(String zipCode) throws FileNotFoundException, IOException{
+        //this is the main logic method that will guide the rest of all the methods
+        boolean check = new File("/Users/enodynowski/Desktop/caching", zipCode + ".txt").exists();
+        //first check if the file already exists, which would mean a user has already requested weather data for this specific address
+        if(check){
+            //then check if the file is greater than 24hr old, in which case you would want to pull new data
+            if (getFileAge (zipCode) <= (8.64 * Math.pow(10, 7))){
+                System.out.println("Reading data from cache...");
+                readFromFile(zipCode);
+          //assuming the above statements are false, pull the data from the API. This way I can reduce the total API calls.       
+            }
+        } else{
+            //if the file already exists, and is older than 24hr, delete the file, so tha getForecastData() writes a new one as opposed to writing
+            //more onto the one that is too old
+            if(check){
+                new File("/Users/enodynowski/Desktop/caching", zipCode + ".txt").delete();
+            }
+            getLocationCode(zipCode);
+            
+
+        }
+    }
+
+        
+    //this method will read the data directly from a file that is written at the bottom of getForecastData, if it's called
+    public static void readFromFile(String zipCode) throws FileNotFoundException{
+        try{
+            Scanner JSONinput = new Scanner(new File ("/Users/enodynowski/Desktop/caching/" + (zipCode  + ".txt")));
+            String localJSONinput = "";
+            while (JSONinput.hasNext()){
+                localJSONinput += JSONinput.next();
+            }
+            JSONParser parser = new JSONParser();
+            JSONObject data_obj = (JSONObject) parser.parse(localJSONinput);
+            JSONArray arr = (JSONArray) data_obj.get("DailyForecasts");
+            JSONObject dayForecast = null;
+                for (int i = 0; i < arr.size(); i++){
+                    dayForecast = (JSONObject) arr.get(i);
+                    //parsing through the nested JSON objects that are returned from the API to retrieve the Temperature Data
+                    JSONObject temp = (JSONObject) dayForecast.get("Temperature");
+                    JSONObject maximum = (JSONObject) temp.get("Maximum");
+                    JSONObject minimum = (JSONObject) temp.get("Minimum");
+                    
+                    //fetching data for precipitation type and intensity retrieving the precipitation Data and the date
+                    JSONObject day = (JSONObject) dayForecast.get("Day");
+                    boolean dayPrecip = (boolean) day.get("HasPrecipitation");
+
+                    //creating strings of the precipitation data and the date
+                    String dateShort = (String) dayForecast.get("Date"); 
+                    String dayPrecipIntensity = (String) day.get("PrecipitationIntensity");
+                    String dayPrecipType = (String) day.get("PrecipitationType");
+                    
+                    //calling the method that will format and output and format the data
+
+                    outputFormatting(dateShort, dayPrecipIntensity, dayPrecipType, dayPrecip, maximum, minimum, day);
+                    
+
+                    }
+                    System.out.println();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        
     }
 
     
@@ -52,12 +126,6 @@ public class WeatherData {
             HttpURLConnection connect = (HttpURLConnection) locationURL.openConnection();
             connect.setRequestMethod("GET");
             connect.connect();
-            
-            
-            
-            
-
-
             //getting the response code back from the GET request, and testing if it is 200. Otherwise throwing a runtime exception
             int responseCode2 = connect.getResponseCode();
             if (responseCode2 != 200){
@@ -94,10 +162,8 @@ public class WeatherData {
                 String locationKey = (String) parentCity.get("Key");
 
                 //calling the other method, that takes a parameter of the zip code entered and the location key that was identified above
-                getForecastData(zipCode ,locationKey);
+                getForecastData(zipCode, locationKey);
                 return locationKey;
-
-
 
             }
 
@@ -111,7 +177,8 @@ public class WeatherData {
         }
     }
         
-     
+   
+    
     //this method will use the location code from the above method and use it to fetch the weather data from above 
     public static void getForecastData (String zipCode, String locationKey){ 
  
@@ -135,6 +202,7 @@ public class WeatherData {
             if (responseCode != 200){
                 throw new RuntimeException ("HttpResponseCode: " + responseCode);
             } else {
+                System.out.println("Fetching Data from API...");
                 String inline = "";
                 //creating a scanner object that will read from the URL in the same way that scanner would read from a file
                 Scanner scanner = new Scanner(weatherUrl.openStream());
@@ -144,41 +212,13 @@ public class WeatherData {
                     inline+=scanner.nextLine();
                 }
                 scanner.close();
-
-                //using the JSON.simple library to parse the string created above into a JSON object
-                JSONParser parse = new JSONParser();
-                JSONObject data_obj = (JSONObject) parse.parse(inline);
-
-                //creating an array with the JSON data that is within the DailyForescasts JSON key
-                JSONArray arr = (JSONArray) data_obj.get("DailyForecasts");
-
-                
-                //initializing the dayForecast object, which will be updated in the following cumulative algorithm
-                JSONObject dayForecast = null;
-                for (int i = 0; i < arr.size(); i++){
-                    dayForecast = (JSONObject) arr.get(i);
-                    //parsing through the nested JSON objects that are returned from the API to retrieve the Temperature Data
-                    JSONObject temp = (JSONObject) dayForecast.get("Temperature");
-                    JSONObject maximum = (JSONObject) temp.get("Maximum");
-                    JSONObject minimum = (JSONObject) temp.get("Minimum");
-                    
-                    //fetching data for precipitation type and intensity retrieving the precipitation Data and the date
-                    JSONObject day = (JSONObject) dayForecast.get("Day");
-                    boolean dayPrecip = (boolean) day.get("HasPrecipitation");
-
-                    //creating strings of the precipitation data and the date
-                    String dateShort = (String) dayForecast.get("Date"); 
-                    String dayPrecipIntensity = (String) day.get("PrecipitationIntensity");
-                    String dayPrecipType = (String) day.get("PrecipitationType");
-                    
-                    //calling the method that will format and output the data
-                    outputFormatting(dateShort, dayPrecipIntensity, dayPrecipType, dayPrecip, maximum, minimum, day);
-                    
-
-                    }
+                PrintStream cache = new PrintStream(new File ("/Users/enodynowski/Desktop/caching/", (zipCode + ".txt")));
+                cache.print(inline);
+                readFromFile(zipCode);
+            }
                     System.out.println();
-                }
-            }   
+                
+        }   
         
         //this will catch all exceptions that get thrown, and provide a stack trace to where it was thrown
         catch (Exception e){
@@ -189,33 +229,43 @@ public class WeatherData {
 
     } 
     
+
+    //this method will format the output such that it looks nice when the user sees it in the console
     public static void outputFormatting(String dateShort, String dayPrecipIntensity, String dayPrecipType, boolean dayPrecip, JSONObject maximum, JSONObject minimum, JSONObject day){
+        System.out.print("|          " + dateShort.substring(0,10) + "          |");
+        System.out.println();
+        System.out.println("  " + day.get("IconPhrase"));
+
+        System.out.println("  High          " + maximum.get("Value") );
+        System.out.println("  Low           " + minimum.get("Value"));
+        
+        //if there will be precipitation, this will print the type and intensity of it. Otherwise prints that there will not be any
         if(dayPrecip){
-            System.out.print("|          " + dateShort.substring(0,10) + "          |");
-            System.out.println();
-            System.out.println("  " + day.get("IconPhrase"));
-
-            System.out.println("  High          " + maximum.get("Value") );
-            System.out.println("  Low           " + minimum.get("Value"));
-            System.out.println("  Precip        " + dayPrecipIntensity.toLowerCase() + " " + dayPrecipType.toLowerCase());
-
-
-
-            //System.out.println(dateShort.substring(0, 10) + ": " + day.get("IconPhrase") + " with a high of " + maximum.get("Value") + " and a low of " + minimum.get("Value"));
-            //System.out.println("There will be " + dayPrecipIntensity.toLowerCase() + " " + dayPrecipType.toLowerCase());
-            //System.out.println();
-
+            
+            System.out.println("  Precip        " + dayPrecipIntensity+ " " + dayPrecipType);
 
         } else {
-            System.out.print("|          " + dateShort.substring(0,10) + "          |");
-            System.out.println();
-            System.out.println("  " + day.get("IconPhrase"));
-
-            System.out.println("  High          " + maximum.get("Value") );
-            System.out.println("  Low           " + minimum.get("Value"));
             System.out.println("  Precip        none");
-            //System.out.println(dateShort.substring(0, 10) + ": " + day.get("IconPhrase") + " with a high of " + maximum.get("Value") + " and a low of " + minimum.get("Value"));
-            //System.out.println();
         }
+        System.out.println();
+
     }
-} 
+    //this method will determine the age of the file in milliseconds since the epoch date, then determine the current time in milliseconds since the epoch date
+    //and return the difference in milliseconds, to be used in the mainLogic() method. 
+    public static long getFileAge(String zipCode) throws IOException{
+       
+        String fileName = "/Users/enodynowski/Desktop/caching/" + zipCode + ".txt";
+        Instant currentInstant = Instant.now();
+        Path file = Paths.get(fileName);
+        BasicFileAttributes attr = Files.readAttributes(file, BasicFileAttributes.class);
+        long fileAgeMillis = attr.creationTime().toMillis();
+        long currentTimeMillis = currentInstant.toEpochMilli();
+        long milliDifference = currentTimeMillis - fileAgeMillis;
+
+
+        return milliDifference;
+            
+
+    }
+
+}

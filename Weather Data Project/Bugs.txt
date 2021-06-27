@@ -16,4 +16,15 @@ So far these are the main issues that I have had to troubleshoot
     
     5) Currently struggling to work through how to add in a caching mechanism. Have experimented briefly with in-memory caching, which proved to be
        pretty difficult. Also experimented briefly with some local file caching, and caching to an array and an arraylist.
-        -UNSOLVED: So far, no luck with anything. I am open to suggestions for how to proceed. 
+        -SOLVED: I was able to implement local file caching functionality. It now reads data from a local file if the location has been queried in the
+        past 24hr. Otherwise it calls to the API, gets the data, writes it to a file, then reads from the file.
+    
+    6) While implementing caching feature, I was receiving null pointer exceptions in a for loop in the readDataFromFile method
+        -SOLVED: I accidentally put a space between Daily and Forecasts in line 70
+    
+    7) While determining the age of the file, I was receiving an issue where it was returning 0ms no matter what
+        -SOLVED: I forgot to include a / after the word caching, so it was never actually finding the file in the first place.
+    
+    8) After implementing the caching functionality, my curly brackets in mainLogic() were messed up, and it would never reach the 
+       else statement that calls getLocationCode().
+        -SOLVED: 
