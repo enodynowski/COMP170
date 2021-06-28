@@ -45,22 +45,19 @@ public class WeatherData {
         //this is the main logic method that will guide the rest of all the methods
         boolean check = new File("/Users/enodynowski/Desktop/caching", zipCode + ".txt").exists();
         //first check if the file already exists, which would mean a user has already requested weather data for this specific address
-        if(check){
+        if(check && (getFileAge (zipCode) <= (8.64 * Math.pow(10, 7)))){
             //then check if the file is greater than 24hr old, in which case you would want to pull new data
-            if (getFileAge (zipCode) <= (8.64 * Math.pow(10, 7))){
-                System.out.println("Reading data from cache...");
-                readFromFile(zipCode);
+            System.out.println("Reading data from cache...");
+            readFromFile(zipCode);
           //assuming the above statements are false, pull the data from the API. This way I can reduce the total API calls.       
-            }
-        } else{
+            }else{
             //if the file already exists, and is older than 24hr, delete the file, so tha getForecastData() writes a new one as opposed to writing
             //more onto the one that is too old
             if(check){
                 new File("/Users/enodynowski/Desktop/caching", zipCode + ".txt").delete();
+                
             }
             getLocationCode(zipCode);
-            
-
         }
     }
 
@@ -94,7 +91,6 @@ public class WeatherData {
                     String dayPrecipType = (String) day.get("PrecipitationType");
                     
                     //calling the method that will format and output and format the data
-
                     outputFormatting(dateShort, dayPrecipIntensity, dayPrecipType, dayPrecip, maximum, minimum, day);
                     
 
@@ -216,7 +212,7 @@ public class WeatherData {
                 cache.print(inline);
                 readFromFile(zipCode);
             }
-                    System.out.println();
+                System.out.println();
                 
         }   
         
