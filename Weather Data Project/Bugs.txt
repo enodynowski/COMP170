@@ -27,4 +27,8 @@ So far these are the main issues that I have had to troubleshoot
     
     8) After implementing the caching functionality, my curly brackets in mainLogic() were messed up, and it would never reach the 
        else statement that calls getLocationCode().
-        -SOLVED: 
+        -SOLVED: Changed up the way that my brackets are set up in the if/else statements
+    
+    9) The way that JSONparser works, is that the json data must not contain any newlines or spaces. This means that when printing the output in 
+       output formatting, there are no spaces between things like "intermittent" and "clouds" or "mostly" and "sunny"
+        -UNSOLVED:
