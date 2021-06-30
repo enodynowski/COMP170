@@ -41,6 +41,12 @@ public class WeatherData {
 
 
     }
+
+/*
+ * Prior to running any of this code, ensure that you have properly adjusted
+ * the file paths. They are currently set up for my computer. If they're not
+ * adjusted correctly, it will throw exceptions. 
+ */
     public static void mainLogic(String zipCode) throws FileNotFoundException, IOException{
         //this is the main logic method that will guide the rest of all the methods
         boolean check = new File("/Users/enodynowski/Desktop/caching", zipCode + ".txt").exists();
@@ -105,7 +111,7 @@ public class WeatherData {
 
     
     //this method will fetch the location code for a provided zip code and return it as a string
-    public  static String getLocationCode(String zipCode) {
+    public  static void getLocationCode(String zipCode) {
         //I put it all in a try/catch just in case it throws any exceptions due to response codes
         
         try{
@@ -159,7 +165,6 @@ public class WeatherData {
 
                 //calling the other method, that takes a parameter of the zip code entered and the location key that was identified above
                 getForecastData(zipCode, locationKey);
-                return locationKey;
 
             }
 
@@ -167,8 +172,6 @@ public class WeatherData {
         } catch (Exception e){
              
             e.printStackTrace();
-            String n = "Exception";
-            return n;
             
         }
     }
