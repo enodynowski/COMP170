@@ -1,6 +1,6 @@
 public class PrintFactors{
     public static void main (String [] args){
-        printFactors(24);
+        printFactors(-4);
 
     }
     public static void printFactors(int number){
