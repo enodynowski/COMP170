@@ -224,7 +224,6 @@ public class WeatherData {
             e.printStackTrace();
         }
 
-        //this method does not need to return anything
 
     } 
     
