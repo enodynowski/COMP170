@@ -1,23 +1,25 @@
-public class Template {
-    public static void main(){
-        String input = "";
+public class cipher {
+    public static void main(String [] args){
+        String input = "DPEPN LDECZYZXJ XPLYD EZZ XLYJ DPNCPED";
         decode(input);
     }
     public static void decode(String input){
         char decodedChar;
-        for (int i = 0; i <= input.length(); i++){
-            StringBuilder plainText = new StringBuilder();
+        StringBuilder plainText = new StringBuilder();
+
+        for (int i = 0; i < input.length(); i++){
             char cipherTextChar = input.charAt(i);
 
             if (cipherTextChar != ' '){
                 char upperCipherTextChar = Character.toUpperCase(cipherTextChar);
-                int decodedInt = (i * -1)+((int)upperCipherTextChar - 65) % 26;
-                decodedChar = (char) (decodedInt + 65);
+                int decodedInt = (15)+((int)upperCipherTextChar) % 26;
+                decodedChar = (char) (decodedInt);
             }
             else {
                 decodedChar = ' '; 
             }
             plainText.append(decodedChar);
         }
+        System.out.println(plainText);
     }
 }

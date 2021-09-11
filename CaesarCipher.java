@@ -3,26 +3,26 @@ public class CaesarCipher
 {
 	public static void main(String[] args) 
 	{
-		encodePlainText();
+		decodeCipherText();
 	}
-	public static void encodePlainText(){
+	public static void decodeCipherText(){
 		//Declaration of variables
-		String plainText = "";
-		StringBuilder cipherText = new StringBuilder();
+		String CipherText = "";
+		StringBuilder PlainText = new StringBuilder();
 		int key;
 		char encodedChar;
 		//take user input
 		Scanner input = new Scanner(System.in);
 		System.out.print("Your message? ");
-		plainText = input.nextLine();
+		CipherText = input.nextLine();
 		System.out.print("Encoding key? ");
 		key = input.nextInt();
 
-		for (int i = 0; i < plainText.length(); i++){
-			char plainTextCharacters = plainText.charAt(i);
-			if (plainTextCharacters != ' '){
+		for (int i = 0; i < CipherText.length(); i++){
+			char ciperTextCharacters = CipherText.charAt(i);
+			if (ciperTextCharacters != ' '){
 				//converting to upper case
-				char upperCasePTC = Character.toUpperCase(plainTextCharacters);
+				char upperCasePTC = Character.toUpperCase(ciperTextCharacters);
 				//encoding uppercase plain text characters
 				int encodedInt = (key + (int)upperCasePTC - 65) % 26;
 				//converting encodedInt to a character
@@ -31,9 +31,9 @@ public class CaesarCipher
 			else{
 				encodedChar = ' ';
 			}
-			cipherText.append(encodedChar);
+			PlainText.append(encodedChar);
 		}
-		System.out.println("Your message is "+ cipherText);
+		System.out.println("Your message is "+ PlainText);
 		input.close();
 	}
 }
