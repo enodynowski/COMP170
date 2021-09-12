@@ -15,25 +15,28 @@ public class CaesarCipher
 		Scanner input = new Scanner(System.in);
 		System.out.print("Your message? ");
 		CipherText = input.nextLine();
-		System.out.print("Encoding key? ");
-		key = input.nextInt();
-
-		for (int i = 0; i < CipherText.length(); i++){
-			char ciperTextCharacters = CipherText.charAt(i);
-			if (ciperTextCharacters != ' '){
-				//converting to upper case
-				char upperCasePTC = Character.toUpperCase(ciperTextCharacters);
-				//encoding uppercase plain text characters
-				int encodedInt = (key + (int)upperCasePTC - 65) % 26;
-				//converting encodedInt to a character
-				encodedChar = (char) (encodedInt + 65);
+		key = 1;
+		while (key < 26){
+			for (int i = 0; i < CipherText.length(); i++){
+				char ciperTextCharacters = CipherText.charAt(i);
+				if (ciperTextCharacters != ' '){
+					//converting to upper case
+					char upperCasePTC = Character.toUpperCase(ciperTextCharacters);
+					//encoding uppercase plain text characters
+					int encodedInt = (key + (int)upperCasePTC - 65) % 26;
+					//converting encodedInt to a character
+					encodedChar = (char) (encodedInt + 65);
+				}
+				else{
+					encodedChar = ' ';
+				}
+				PlainText.append(encodedChar);
 			}
-			else{
-				encodedChar = ' ';
-			}
-			PlainText.append(encodedChar);
-		}
-		System.out.println("Your message is "+ PlainText);
+			System.out.println("Your message with key " + key + " is " + PlainText);
+			PlainText.delete(0, PlainText.length());
+			key++;
+				}
+		
 		input.close();
 	}
 }
